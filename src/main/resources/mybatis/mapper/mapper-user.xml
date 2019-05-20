@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.demo.dao.UserDao">
+
+    <resultMap id="BaseResultMap" type="user">
+        <id property="id" column="id"/>
+        <result property="username" column="username"></result>
+        <result property="password" column="password"></result>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,username,password
+    </sql>
+    <select id="getAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from user ORDER BY id DESC
+    </select>
+
+    <select id="countByUsername" resultType="int" parameterType="string">
+        SELECT
+            count(*)
+        from user
+        where username = #{username}
+    </select>
+
+    <select id="getByUsername" resultMap="BaseResultMap" parameterType="string">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from user
+        where username = #{username}
+    </select>
+
+    <select id="get" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from user
+        <where>
+            <if test="id!=null">id=#{id}</if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="user" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO user (username, password)
+        VALUES (#{username}, #{password})
+    </insert>
+
+    <update id="update" parameterType="user">
+        UPDATE user
+        <set>
+            <if test="username!=null">username=#{username},</if>
+            <if test="password!=null">password=#{password},</if>
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE
+        from user
+        where id = #{id}
+    </delete>
+
+    <select id="isExist" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user WHERE username=#{username} and password=#{password}
+    </select>
+
+</mapper>
